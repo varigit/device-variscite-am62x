@@ -1,0 +1,36 @@
+From d67176822a536a083114037a1f6147e1bd5f32a8 Mon Sep 17 00:00:00 2001
+From: FrancescoFerraro <francesco.f@variscite.com>
+Date: Wed, 8 May 2024 09:56:53 +0200
+Subject: [PATCH] am62x: dtimages.mk: exclude file when build am62x_var_som
+ target
+
+This change fix build errors with the follow messages:
+
+ device/variscite/am62x_var_som/build/tasks/dtimages.mk:19: error: overriding commands for target `out/target/product/am62x_var_som/dtb.img', previously defined at device/ti/am62x/build/tasks/dtimages.mk:22
+ ckati failed with: exit status 1
+
+Signed-off-by: FrancescoFerraro <francesco.f@variscite.com>
+---
+ build/tasks/dtimages.mk | 2 ++
+ 1 file changed, 2 insertions(+)
+
+diff --git a/build/tasks/dtimages.mk b/build/tasks/dtimages.mk
+index 7d24efe..54c5936 100644
+--- a/build/tasks/dtimages.mk
++++ b/build/tasks/dtimages.mk
+@@ -5,6 +5,7 @@
+ # dtbo.img, and the resulting $(PRODUCT_OUT)/dtbo.img will be created with
+ # Android build system, by exploiting BOARD_PREBUILT_DTBOIMAGE variable.
+ 
++ifneq ($(filter-out am62x_var_som%, $(TARGET_DEVICE)),)
+ ifneq ($(filter am62x% am62p%, $(TARGET_DEVICE)),)
+ 
+ MKDTIMG := prebuilts/misc/linux-x86/libufdt/mkdtimg
+@@ -31,3 +32,4 @@ include $(BUILD_PHONY_PACKAGE)
+ droidcore: dtbimage
+ 
+ endif
++endif
+-- 
+2.43.2
+

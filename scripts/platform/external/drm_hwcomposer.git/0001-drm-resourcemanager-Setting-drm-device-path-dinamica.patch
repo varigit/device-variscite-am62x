@@ -1,0 +1,60 @@
+From 29cc116ba95d88cd2720352c70b0ce3948b430bc Mon Sep 17 00:00:00 2001
+From: FrancescoFerraro <francesco.f@variscite.com>
+Date: Thu, 2 May 2024 16:29:18 +0200
+Subject: [PATCH] drm_hwcomposer: Setting drm device path dinamically
+
+This change is need because using vendor.hwc.drm.device property is not
+stable due to the LVDS is linked sometimes to card0 and sometimes to card1
+causing LVDS issue.
+
+Further details:
+  when LVDS is linked to card0:
+  ls -l /sys/class/drm/
+  card0 -> ../../devices/platform/bus@f0000/30200000.dss/drm/card0
+  card0-LVDS-1 -> ../../devices/platform/bus@f0000/30200000.dss/drm/card0/card0-LVDS-1
+  card1 -> ../../devices/platform/bus@f0000/fd00000.gpu/drm/card1
+  renderD128 -> ../../devices/platform/bus@f0000/fd00000.gpu/drm/renderD128
+
+  when LVDS is linked to card1:
+  ls -l /sys/class/drm/
+  card0 -> ../../devices/platform/bus@f0000/fd00000.gpu/drm/card0
+  card1 -> ../../devices/platform/bus@f0000/30200000.dss/drm/card1
+  card1-LVDS-1 -> ../../devices/platform/bus@f0000/30200000.dss/drm/card1/card1-LVDS-1
+  renderD128 -> ../../devices/platform/bus@f0000/fd00000.gpu/drm/renderD128
+
+Change-Id: Iacdf04a84efceabaf56ba1d309d641190d291e3a
+Signed-off-by: FrancescoFerraro <francesco.f@variscite.com>
+---
+ drm/ResourceManager.cpp | 9 +++++++++
+ 1 file changed, 9 insertions(+)
+
+diff --git a/drm/ResourceManager.cpp b/drm/ResourceManager.cpp
+index 577d86c..288ca53 100644
+--- a/drm/ResourceManager.cpp
++++ b/drm/ResourceManager.cpp
+@@ -40,6 +40,8 @@ ResourceManager::ResourceManager(
+ }
+ 
+ void ResourceManager::Init() {
++  struct stat sb;
++
+   if (initialized_) {
+     ALOGE("Already initialized");
+     return;
+@@ -50,6 +52,13 @@ void ResourceManager::Init() {
+   // which means that it will try open all devices until an error is met.
+   auto path_len = property_get("vendor.hwc.drm.device", path_pattern,
+                                "/dev/dri/card%");
++
++  if (lstat("/sys/devices/platform/bus@f0000/30200000.dss/drm/card0/card0-LVDS-1", &sb) >= 0) {
++    strcpy(path_pattern, "/dev/dri/card0");
++  } else if (lstat("/sys/devices/platform/bus@f0000/30200000.dss/drm/card1/card1-LVDS-1", &sb) >= 0) {
++    strcpy(path_pattern, "/dev/dri/card1");
++  }
++
+   if (path_pattern[path_len - 1] != '%') {
+     auto dev = DrmDevice::CreateInstance(path_pattern, this);
+     if (dev) {
+-- 
+2.43.2
+
