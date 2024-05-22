@@ -22,7 +22,7 @@ ro.hardware.egl=powervr
 ro.hardware.vulkan=powervr
 graphics.gpu.profiler.support=true
 vendor.hwc.drm.scale_with_gpu=1
-vendor.hwc.drm.device=/dev/dri/card0
+vendor.hwc.drm.device=/dev/dri/card1
 
 # Codec2: create input surface on the framework side
 debug.stagefright.c2inputsurface=-1
