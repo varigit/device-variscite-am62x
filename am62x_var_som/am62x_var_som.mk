@@ -48,6 +48,27 @@ PRODUCT_VENDOR_PROPERTIES += \
 PRODUCT_VENDOR_PROPERTIES += \
      ro.config.low_ram=true
 
+# WORKAROUND for OTA:
+#
+# With limited memory, OTA is broken when we apply it via update_engine.
+# Indeed when we switch to the new slot, snapuserd_proxy fails and the device reboot.
+#
+# When ro.config.low_ram=true and ro.config.per_app_memcg property is not set,
+# UsePerAppMemcg will return true and so snapuserd_proxy will try to access to:
+# /dev/memcg/apps*
+#
+# However these required directories are not yet present.
+#
+# A patch has been made to fix this issue:
+# https://android-review.googlesource.com/c/platform/system/core/+/2820943
+#
+# This fix is not yet present in our AOSP.
+# As workaround we manually set: ro.config.per_app_memcg=false
+# Thus UsePerAppMemcg will return false and snapuserd_proxy won't try to access
+# to /dev/memcg/apps*.
+PRODUCT_VENDOR_PROPERTIES += \
+     ro.config.per_app_memcg=false
+
 # Speed profile services and wifi-service to reduce RAM and storage.
 PRODUCT_SYSTEM_SERVER_COMPILER_FILTER := speed-profile
 
