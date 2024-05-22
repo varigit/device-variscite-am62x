@@ -16,14 +16,16 @@
 TARGET_KERNEL_USE ?= 6.1
 
 $(call inherit-product, $(SRC_TARGET_DIR)/product/full_base.mk)
-$(call inherit-product, device/ti/am62x/am62x/device.mk)
+$(call inherit-product, device/variscite/am62x_var_som/device.mk)
 
-PRODUCT_NAME := am62x
-PRODUCT_DEVICE := am62x
+PRODUCT_NAME := am62x_var_som
+PRODUCT_DEVICE := am62x_var_som
 PRODUCT_BRAND := TI
-PRODUCT_MODEL := AOSP on AM62X EVM
-PRODUCT_MANUFACTURER := TexasInstruments
+PRODUCT_MODEL := AOSP on VAR-SOM-AM62X
+PRODUCT_MANUFACTURER := Variscite
 PRODUCT_CHARACTERISTICS := tablet
+
+BCM_FIRMWARE_PATH := vendor/variscite/bcm_4343w_fw/brcm
 
 # Set lowram options
 PRODUCT_VENDOR_PROPERTIES += \
@@ -53,6 +55,16 @@ PRODUCT_SYSTEM_SERVER_COMPILER_FILTER := speed-profile
 PRODUCT_VENDOR_PROPERTIES += \
     ro.soc.manufacturer=$(PRODUCT_MANUFACTURER) \
     ro.soc.model=$(PRODUCT_DEVICE)
+
+# Sterling LWB / LWB5 wifi and bluetooth combo Firmware
+PRODUCT_COPY_FILES += \
+    $(BCM_FIRMWARE_PATH)/BCM43430A1.hcd:vendor/firmware/brcm/BCM43430A1.hcd \
+    $(BCM_FIRMWARE_PATH)/brcmfmac43430-sdio.bin:vendor/firmware/brcm/brcmfmac43430-sdio.bin \
+    $(BCM_FIRMWARE_PATH)/brcmfmac43430-sdio.txt:vendor/firmware/brcm/brcmfmac43430-sdio.txt \
+    $(BCM_FIRMWARE_PATH)/brcmfmac43430-sdio.clm_blob:vendor/firmware/brcm/brcmfmac43430-sdio.clm_blob \
+    $(BCM_FIRMWARE_PATH)/BCM4335C0.hcd:vendor/firmware/brcm/BCM4335C0.hcd \
+    $(BCM_FIRMWARE_PATH)/brcmfmac4339-sdio.bin:vendor/firmware/brcm/brcmfmac4339-sdio.bin \
+    $(BCM_FIRMWARE_PATH)/brcmfmac4339-sdio.txt:vendor/firmware/brcm/brcmfmac4339-sdio.txt
 
 # clean-up all unknown PRODUCT_PACKAGES
 allowed_list := product_manifest.xml

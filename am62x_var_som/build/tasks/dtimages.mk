@@ -5,7 +5,7 @@
 # dtbo.img, and the resulting $(PRODUCT_OUT)/dtbo.img will be created with
 # Android build system, by exploiting BOARD_PREBUILT_DTBOIMAGE variable.
 
-ifneq ($(filter am62x% am62p%, $(TARGET_DEVICE)),)
+ifneq ($(filter am62x_var_som%, $(TARGET_DEVICE)),)
 
 MKDTIMG := prebuilts/misc/linux-x86/libufdt/mkdtimg
 DTBIMAGE := $(PRODUCT_OUT)/dtb.img
@@ -13,10 +13,7 @@ DTBIMAGE := $(PRODUCT_OUT)/dtb.img
 
 # Please keep this list fixed: add new files in the end of the list
 DTB_FILES := \
-	$(LOCAL_DTB)/k3-am625-sk.dtb \
-	$(LOCAL_DTB)/k3-am62-lp-sk.dtb \
-	$(LOCAL_DTB)/k3-am625-beagleplay.dtb \
-	$(LOCAL_DTB)/k3-am62p5-sk.dtb
+	$(LOCAL_DTB)/k3-am625-var-som-symphony.dtb
 
 $(DTBIMAGE): $(DTB_FILES) $(MKDTIMG)
 	$(MKDTIMG) create $@ --page_size=4096 $(DTB_FILES) 

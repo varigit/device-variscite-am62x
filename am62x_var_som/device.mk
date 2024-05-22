@@ -8,7 +8,7 @@ PRODUCT_VENDOR_PROPERTIES += \
 # Ueventd
 PRODUCT_COPY_FILES += \
     device/ti/am62x/am62x/ueventd.am62x.rc:$(TARGET_COPY_OUT_VENDOR)/etc/ueventd.rc \
-    device/ti/am62x/camera/android.hardware.camera.provider@2.5-service_am62x.rc:$(TARGET_COPY_OUT_VENDOR)/etc/init/android.hardware.camera.provider@2.5-service_$(PRODUCT_PLATFORM).rc \
+    device/ti/am62x/camera/android.hardware.camera.provider@2.5-service_am62x.rc:$(TARGET_COPY_OUT_VENDOR)/etc/init/android.hardware.camera.provider@2.5-service_$(PRODUCT_PLATFORM).rc
 
 # Camera
 PRODUCT_PACKAGES += \
@@ -17,7 +17,7 @@ PRODUCT_PACKAGES += \
 # Enable USB Camera
 PRODUCT_PACKAGES += android.hardware.camera.provider@2.5-external-service.ti
 
-PRODUCT_SOONG_NAMESPACES += device/ti/am62x/
+PRODUCT_SOONG_NAMESPACES += device/variscite/am62x_var_som/
 
 # AVB
 ifeq ($(TARGET_BUILD_VARIANT), user)
@@ -77,20 +77,19 @@ PRODUCT_BUILD_SUPER_PARTITION := true
 PRODUCT_USE_DYNAMIC_PARTITIONS := true
 PRODUCT_USE_DYNAMIC_PARTITION_SIZE := true
 
-TARGET_PRODUCT_PROP := device/ti/am62x/product.prop
+TARGET_PRODUCT_PROP := device/variscite/am62x_var_som/product.prop
 
 PRODUCT_COPY_FILES += \
     frameworks/native/data/etc/android.hardware.wifi.xml:$(TARGET_COPY_OUT_VENDOR)/etc/permissions/android.hardware.wifi.xml
 
 # Add wifi-related packages
-PRODUCT_PACKAGES += libwpa_client wpa_supplicant hostapd wificond wpa_cli
+PRODUCT_PACKAGES += libwpa_client wpa_supplicant hostapd wificond wpa_cli wpa_supplicant.conf
 
 PRODUCT_COPY_FILES += \
-    frameworks/native/data/etc/android.hardware.wifi.direct.xml:$(TARGET_COPY_OUT_VENDOR)/etc/permissions/android.hardware.wifi.direct.xml \
+    frameworks/native/data/etc/android.hardware.wifi.direct.xml:$(TARGET_COPY_OUT_VENDOR)/etc/permissions/android.hardware.wifi.direct.xml
 
 # Wifi configuration files
 PRODUCT_COPY_FILES += \
-    device/ti/am62x/wifi/wpa_supplicant.conf:$(TARGET_COPY_OUT_VENDOR)/etc/wifi/wpa_supplicant.conf \
     device/ti/am62x/wifi/wpa_supplicant_overlay.conf:$(TARGET_COPY_OUT_VENDOR)/etc/wifi/wpa_supplicant_overlay.conf \
     device/ti/am62x/wifi/p2p_supplicant_overlay.conf:$(TARGET_COPY_OUT_VENDOR)/etc/wifi/p2p_supplicant_overlay.conf
 
@@ -168,8 +167,8 @@ PRODUCT_COPY_FILES += \
     frameworks/native/data/etc/android.hardware.vulkan.version-1_3.xml:$(TARGET_COPY_OUT_VENDOR)/etc/permissions/android.hardware.vulkan.version.xml \
     frameworks/native/data/etc/android.hardware.vulkan.compute-0.xml:$(TARGET_COPY_OUT_VENDOR)/etc/permissions/android.hardware.vulkan.compute.xml \
     frameworks/native/data/etc/android.hardware.vulkan.level-0.xml:$(TARGET_COPY_OUT_VENDOR)/etc/permissions/android.hardware.vulkan.level.xml \
-	frameworks/native/data/etc/android.software.vulkan.deqp.level-2023-03-01.xml:$(TARGET_COPY_OUT_VENDOR)/etc/permissions/android.software.vulkan.deqp.level.xml \
-	frameworks/native/data/etc/android.software.opengles.deqp.level-2023-03-01.xml:$(TARGET_COPY_OUT_VENDOR)/etc/permissions/android.software.opengles.deqp.level.xml
+    frameworks/native/data/etc/android.software.vulkan.deqp.level-2023-03-01.xml:$(TARGET_COPY_OUT_VENDOR)/etc/permissions/android.software.vulkan.deqp.level.xml \
+    frameworks/native/data/etc/android.software.opengles.deqp.level-2023-03-01.xml:$(TARGET_COPY_OUT_VENDOR)/etc/permissions/android.software.opengles.deqp.level.xml
 
 # Audio:
 # NOTE: each product should also add audio.primary.$(TARGET_DEVICE) to its PRODUCT_PACKAGES
@@ -183,21 +182,25 @@ PRODUCT_PACKAGES += \
 PRODUCT_PACKAGES += \
     audio.usb.default
 
-PRODUCT_PACKAGES += audio.primary.$(PRODUCT_PLATFORM)
+PRODUCT_PACKAGES += audio.primary.am62x_var_som
+
 
 # Audio HAL
 PRODUCT_COPY_FILES += \
-    device/ti/am62x/audio_hal_configuration.xml:$(TARGET_COPY_OUT_VENDOR)/etc/audio.$(PRODUCT_PLATFORM).xml
+    device/ti/am62x/audio_hal_configuration.xml:$(TARGET_COPY_OUT_VENDOR)/etc/audio.am62x_var_som.xml
 
 # audio policy configuration
 USE_XML_AUDIO_POLICY_CONF := 1
 PRODUCT_COPY_FILES += \
-    device/ti/am62x/audio_policy_configuration.xml:$(TARGET_COPY_OUT_VENDOR)/etc/audio_policy_configuration.xml \
+    device/variscite/am62x_var_som/audio_policy_configuration.xml:$(TARGET_COPY_OUT_VENDOR)/etc/audio_policy_configuration.xml \
     frameworks/av/services/audiopolicy/config/audio_policy_volumes.xml:$(TARGET_COPY_OUT_VENDOR)/etc/audio_policy_volumes.xml \
     frameworks/av/services/audiopolicy/config/default_volume_tables.xml:$(TARGET_COPY_OUT_VENDOR)/etc/default_volume_tables.xml \
     frameworks/av/services/audiopolicy/config/usb_audio_policy_configuration.xml:$(TARGET_COPY_OUT_VENDOR)/etc/usb_audio_policy_configuration.xml \
     frameworks/av/services/audiopolicy/config/r_submix_audio_policy_configuration.xml:$(TARGET_COPY_OUT_VENDOR)/etc/r_submix_audio_policy_configuration.xml \
-    frameworks/av/media/libeffects/data/audio_effects.xml:$(TARGET_COPY_OUT_VENDOR)/etc/audio_effects.xml
+    frameworks/av/media/libeffects/data/audio_effects.xml:$(TARGET_COPY_OUT_VENDOR)/etc/audio_effects.xml \
+    frameworks/av/services/audiopolicy/config/a2dp_in_audio_policy_configuration_7_0.xml:$(TARGET_COPY_OUT_VENDOR)/etc/a2dp_in_audio_policy_configuration_7_0.xml \
+    frameworks/av/services/audiopolicy/config/bluetooth_audio_policy_configuration_7_0.xml:$(TARGET_COPY_OUT_VENDOR)/etc/bluetooth_audio_policy_configuration_7_0.xml \
+    frameworks/av/services/audiopolicy/config/bluetooth_with_le_audio_policy_configuration_7_0.xml:$(TARGET_COPY_OUT_VENDOR)/etc/bluetooth_with_le_audio_policy_configuration_7_0.xml
 
 # Low level audio tools for debugging
 PRODUCT_PACKAGES_DEBUG += \
@@ -206,6 +209,19 @@ PRODUCT_PACKAGES_DEBUG += \
     tinymix \
     tinypcminfo \
     cplay
+
+# can tools
+PRODUCT_PACKAGES += \
+    candump \
+    cansend \
+    cangen \
+    canfdtest \
+    cangw \
+    canplayer \
+    cansniffer \
+    isotprecv \
+    isotpsend \
+    isotpserver
 
 # USB HAL
 PRODUCT_PACKAGES += \
@@ -239,7 +255,7 @@ PRODUCT_COPY_FILES += \
         frameworks/native/data/etc/android.software.secure_lock_screen.xml:$(TARGET_COPY_OUT_VENDOR)/etc/permissions/android.software.secure_lock_screen.xml
 
 PRODUCT_COPY_FILES += \
-        device/ti/am62x/init.am62x.rc:$(TARGET_COPY_OUT_VENDOR)/etc/init/hw/init.$(PRODUCT_PLATFORM).rc \
+        device/variscite/am62x_var_som/init.am62x.rc:$(TARGET_COPY_OUT_VENDOR)/etc/init/hw/init.$(PRODUCT_PLATFORM).rc \
         device/ti/am62x/init.am62x.zygote_wakelock.rc:$(TARGET_COPY_OUT_VENDOR)/etc/init/init.$(PRODUCT_PLATFORM).zygote_wakelock.rc \
         device/ti/am62x/init.am62x.usb.rc:$(TARGET_COPY_OUT_VENDOR)/etc/init/init.$(PRODUCT_PLATFORM).usb.rc
 
@@ -281,7 +297,7 @@ PRODUCT_COPY_FILES +=  \
 
 # CSI Camera using libcamera
 PRODUCT_COPY_FILES += \
-     device/ti/am62x/camera/camera_hal.yaml:$(TARGET_COPY_OUT_VENDOR)/etc/libcamera/camera_hal.yaml
+     device/variscite/am62x_var_som/camera/camera_hal.yaml:$(TARGET_COPY_OUT_VENDOR)/etc/libcamera/camera_hal.yaml
 
 PRODUCT_PACKAGES_DEBUG += cam
 
@@ -295,12 +311,17 @@ PRODUCT_PACKAGES += \
 #
 # Enable bluetooth
 PRODUCT_PACKAGES += \
-    android.hardware.bluetooth@1.1-service.btlinux
+    android.hardware.bluetooth@1.1-service.btlinux \
+    android.hardware.bluetooth@1.0-impl \
+    android.hardware.bluetooth.audio@2.1-impl \
+    android.hardware.bluetooth.audio-impl \
+    audio.bluetooth.default
 
 # Bluetooth se policies
 BOARD_SEPOLICY_DIRS += system/bt/vendor_libs/linux/sepolicy
 PRODUCT_COPY_FILES += \
-    frameworks/native/data/etc/android.hardware.bluetooth.xml:$(TARGET_COPY_OUT_VENDOR)/etc/permissions/android.hardware.bluetooth.xml
+    frameworks/native/data/etc/android.hardware.bluetooth.xml:$(TARGET_COPY_OUT_VENDOR)/etc/permissions/android.hardware.bluetooth.xml \
+    frameworks/native/data/etc/android.hardware.bluetooth_le.xml:$(TARGET_COPY_OUT_VENDOR)/etc/permissions/android.hardware.bluetooth_le.xml
 
 # Demo apps
 PRODUCT_PACKAGES_DEBUG += cabin_demo

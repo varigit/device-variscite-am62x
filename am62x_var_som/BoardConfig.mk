@@ -25,14 +25,14 @@ TARGET_USES_64_BIT_BINDER := true
 # Disable 64 bit mediadrmserver
 TARGET_ENABLE_MEDIADRM_64 :=
 
-TARGET_BOARD_PLATFORM := am62x
-TARGET_BOOTLOADER_BOARD_NAME := am62x
+TARGET_BOARD_PLATFORM := am62x_var_som
+TARGET_BOOTLOADER_BOARD_NAME := am62x_var_som
 
 BOARD_USERDATAIMAGE_PARTITION_SIZE := 10662838272
 BOARD_USERDATAIMAGE_FILE_SYSTEM_TYPE := f2fs
 
 ifneq ($(TARGET_BUILD_VARIANT), user)
-BOARD_KERNEL_CMDLINE += console=ttyS2,115200
+BOARD_KERNEL_CMDLINE += console=ttyS0,115200
 endif
 ifeq ($(TARGET_SDCARD_BOOT), true)
 BOARD_BOOTCONFIG += androidboot.boot_devices=bus@f0000/fa00000.mmc
@@ -46,36 +46,19 @@ BOARD_BOOTCONFIG += androidboot.hardware=am62x
 
 # Copy Bootloader prebuilts and prebuilts images
 PRODUCT_COPY_FILES += \
-        vendor/ti/am62x/bootloader/am62x-lp-sk/tiboot3.bin:$(TARGET_OUT)/tiboot3-am62x-lp-sk.bin \
-        vendor/ti/am62x/bootloader/am62x-lp-sk/tiboot3-hsfs.bin:$(TARGET_OUT)/tiboot3-am62x-lp-sk-hsfs.bin \
-        vendor/ti/am62x/bootloader/am62x-lp-sk/tispl.bin:$(TARGET_OUT)/tispl-am62x-lp-sk.bin \
-        vendor/ti/am62x/bootloader/am62x-lp-sk/u-boot.img:$(TARGET_OUT)/u-boot-am62x-lp-sk.img \
         vendor/ti/am62x/bootloader/am62x-sk/tiboot3.bin:$(TARGET_OUT)/tiboot3-am62x-sk.bin \
         vendor/ti/am62x/bootloader/am62x-sk/tiboot3-hsfs.bin:$(TARGET_OUT)/tiboot3-am62x-sk-hsfs.bin \
         vendor/ti/am62x/bootloader/am62x-sk/tispl.bin:$(TARGET_OUT)/tispl-am62x-sk.bin \
         vendor/ti/am62x/bootloader/am62x-sk/u-boot.img:$(TARGET_OUT)/u-boot-am62x-sk.img \
-        vendor/ti/am62x/bootloader/am62x-lp-sk-dfu/tiboot3.bin:$(TARGET_OUT)/tiboot3-am62x-lp-sk-dfu.bin \
-        vendor/ti/am62x/bootloader/am62x-lp-sk-dfu/tiboot3-hsfs.bin:$(TARGET_OUT)/tiboot3-am62x-lp-sk-dfu-hsfs.bin \
-        vendor/ti/am62x/bootloader/am62x-lp-sk-dfu/tispl.bin:$(TARGET_OUT)/tispl-am62x-lp-sk-dfu.bin \
-        vendor/ti/am62x/bootloader/am62x-lp-sk-dfu/u-boot.img:$(TARGET_OUT)/u-boot-am62x-lp-sk-dfu.img \
         vendor/ti/am62x/bootloader/am62x-sk-dfu/tiboot3.bin:$(TARGET_OUT)/tiboot3-am62x-sk-dfu.bin \
         vendor/ti/am62x/bootloader/am62x-sk-dfu/tiboot3-hsfs.bin:$(TARGET_OUT)/tiboot3-am62x-sk-dfu-hsfs.bin \
         vendor/ti/am62x/bootloader/am62x-sk-dfu/tispl.bin:$(TARGET_OUT)/tispl-am62x-sk-dfu.bin \
-        vendor/ti/am62x/bootloader/am62x-sk-dfu/u-boot.img:$(TARGET_OUT)/u-boot-am62x-sk-dfu.img \
-        vendor/ti/am62x/bootloader/am625-beagleplay/tiboot3.bin:$(TARGET_OUT)/tiboot3-am625-beagleplay.bin \
-        vendor/ti/am62x/bootloader/am625-beagleplay/tispl.bin:$(TARGET_OUT)/tispl-am625-beagleplay.bin \
-        vendor/ti/am62x/bootloader/am625-beagleplay/u-boot.img:$(TARGET_OUT)/u-boot-am625-beagleplay.img \
-        vendor/ti/am62x/bootloader/am625-beagleplay-dfu/tiboot3.bin:$(TARGET_OUT)/tiboot3-am625-beagleplay-dfu.bin \
-        vendor/ti/am62x/bootloader/am625-beagleplay-dfu/tispl.bin:$(TARGET_OUT)/tispl-am625-beagleplay-dfu.bin \
-        vendor/ti/am62x/bootloader/am625-beagleplay-dfu/u-boot.img:$(TARGET_OUT)/u-boot-am625-beagleplay-dfu.img
+        vendor/ti/am62x/bootloader/am62x-sk-dfu/u-boot.img:$(TARGET_OUT)/u-boot-am62x-sk-dfu.img
 
 # Copy snagrecover config file
 PRODUCT_COPY_FILES += \
         device/ti/am62x/config/dfu/am62x-sk-evm.yaml:$(TARGET_OUT)/am62x-sk-evm.yaml \
-        device/ti/am62x/config/dfu/am62x-sk-evm-hsfs.yaml:$(TARGET_OUT)/am62x-sk-evm-hsfs.yaml \
-        device/ti/am62x/config/dfu/am62x-lp-sk-evm.yaml:$(TARGET_OUT)/am62x-lp-sk-evm.yaml \
-        device/ti/am62x/config/dfu/am62x-lp-sk-evm-hsfs.yaml:$(TARGET_OUT)/am62x-lp-sk-evm-hsfs.yaml \
-        device/ti/am62x/config/dfu/am625-beagleplay.yaml:$(TARGET_OUT)/am625-beagleplay.yaml \
+        device/ti/am62x/config/dfu/am62x-sk-evm-hsfs.yaml:$(TARGET_OUT)/am62x-sk-evm-hsfs.yaml
 
 # AVB
 ifeq ($(TARGET_BUILD_VARIANT), user)
@@ -149,7 +132,7 @@ BOARD_VENDOR_DLKMIMAGE_FILE_SYSTEM_TYPE := ext4
 TARGET_COPY_OUT_VENDOR_DLKM := vendor_dlkm
 BOARD_DB_DYNAMIC_PARTITIONS_PARTITION_LIST += vendor_dlkm
 
-TARGET_SCREEN_DENSITY ?= 240
+TARGET_SCREEN_DENSITY ?= 160
 
 # Recovery
 TARGET_RECOVERY_PIXEL_FORMAT := RGBX_8888
@@ -206,7 +189,7 @@ BOARD_KERNEL_CMDLINE += mem_sleep_default=deep
 DEVICE_MANIFEST_FILE += device/ti/am62x/manifest.xml
 DEVICE_PRODUCT_COMPATIBILITY_MATRIX_FILE += device/ti/am62x/framework_compatibility_matrix.xml
 
-BOARD_SEPOLICY_DIRS += device/ti/am62x/sepolicy/common/
+BOARD_SEPOLICY_DIRS += device/variscite/am62x_var_som/sepolicy/common/
 ifeq ($(TARGET_SDCARD_BOOT), true)
 BOARD_SEPOLICY_DIRS += device/ti/am62x/sepolicy/sdcard/
 else
@@ -223,6 +206,10 @@ PRODUCT_COPY_FILES += \
 # Copy Android Flashing Script
 PRODUCT_COPY_FILES += \
         device/ti/am62x/flashall.sh:$(TARGET_OUT)/flashall.sh
+
+# Boot Animation
+PRODUCT_COPY_FILES += \
+    device/variscite/common/bootanimation/bootanimation-var1280.zip:system/media/bootanimation.zip
 
 # Copy kernel modules into /vendor/lib/modules
 BOARD_ALL_MODULES := $(shell find device/ti/am62x-kernel/kernel/$(TARGET_KERNEL_USE) -type f -iname '*.ko')
@@ -264,13 +251,15 @@ TINYALSA_NO_ADD_NEW_CTRLS := true
 TINYALSA_NO_CTL_GET_ID := true
 TINYCOMPRESS_TSTAMP_IS_LONG := true
 
-# generic wifi
+# wifi
+BOARD_WLAN_DEVICE := bcmdhd
 WPA_SUPPLICANT_VERSION := VER_0_8_X
-BOARD_HOSTAPD_PRIVATE_LIB   := lib_driver_cmd_ti
-BOARD_WPA_SUPPLICANT_PRIVATE_LIB := lib_driver_cmd_ti
+BOARD_HOSTAPD_PRIVATE_LIB := lib_driver_cmd_$(BOARD_WLAN_DEVICE)
+BOARD_WPA_SUPPLICANT_PRIVATE_LIB := lib_driver_cmd_$(BOARD_WLAN_DEVICE)
 BOARD_WPA_SUPPLICANT_DRIVER := NL80211
 BOARD_HOSTAPD_DRIVER := NL80211
 WIFI_HIDL_UNIFIED_SUPPLICANT_SERVICE_RC_ENTRY := true
+WIFI_HIDL_FEATURE_DUAL_INTERFACE := true
 
 BOARD_VENDOR_RAMDISK_KERNEL_MODULES += \
         device/ti/am62x-kernel/kernel/$(TARGET_KERNEL_USE)/8250_omap.ko \
@@ -284,7 +273,7 @@ BOARD_VENDOR_RAMDISK_KERNEL_MODULES += \
         device/ti/am62x-kernel/kernel/$(TARGET_KERNEL_USE)/k3-udma.ko \
         device/ti/am62x-kernel/kernel/$(TARGET_KERNEL_USE)/k3-udma-glue.ko \
         device/ti/am62x-kernel/kernel/$(TARGET_KERNEL_USE)/k3-ringacc.ko \
-        device/ti/am62x-kernel/kernel/$(TARGET_KERNEL_USE)/pruss.ko \
+        device/ti/am62x-kernel/kernel/$(TARGET_KERNEL_USE)/libarc4.ko \
         device/ti/am62x-kernel/kernel/$(TARGET_KERNEL_USE)/irq-ti-sci-inta.ko \
         device/ti/am62x-kernel/kernel/$(TARGET_KERNEL_USE)/irq-ti-sci-intr.ko \
         device/ti/am62x-kernel/kernel/$(TARGET_KERNEL_USE)/irq-pruss-intc.ko \
@@ -310,6 +299,8 @@ BOARD_VENDOR_RAMDISK_KERNEL_MODULES += \
         device/ti/am62x-kernel/kernel/$(TARGET_KERNEL_USE)/ili210x.ko \
         device/ti/am62x-kernel/kernel/$(TARGET_KERNEL_USE)/phy-omap-usb2.ko \
         device/ti/am62x-kernel/kernel/$(TARGET_KERNEL_USE)/palmas.ko \
+        device/ti/am62x-kernel/kernel/$(TARGET_KERNEL_USE)/pwrseq_emmc.ko \
+        device/ti/am62x-kernel/kernel/$(TARGET_KERNEL_USE)/pwrseq_simple.ko \
         device/ti/am62x-kernel/kernel/$(TARGET_KERNEL_USE)/sdhci_am654.ko \
         device/ti/am62x-kernel/kernel/$(TARGET_KERNEL_USE)/mux-core.ko \
         device/ti/am62x-kernel/kernel/$(TARGET_KERNEL_USE)/mux-mmio.ko \
@@ -334,12 +325,18 @@ BOARD_VENDOR_RAMDISK_KERNEL_MODULES += \
         device/ti/am62x-kernel/kernel/$(TARGET_KERNEL_USE)/rti_wdt.ko \
         device/ti/am62x-kernel/kernel/$(TARGET_KERNEL_USE)/tidss.ko \
         device/ti/am62x-kernel/kernel/$(TARGET_KERNEL_USE)/display-connector.ko \
+        device/ti/am62x-kernel/kernel/$(TARGET_KERNEL_USE)/adin.ko \
         device/ti/am62x-kernel/kernel/$(TARGET_KERNEL_USE)/panel-simple.ko \
         device/ti/am62x-kernel/kernel/$(TARGET_KERNEL_USE)/sii902x.ko \
         device/ti/am62x-kernel/kernel/$(TARGET_KERNEL_USE)/ite-it66121.ko  \
         device/ti/am62x-kernel/kernel/$(TARGET_KERNEL_USE)/tps65219.ko \
         device/ti/am62x-kernel/kernel/$(TARGET_KERNEL_USE)/tps65219-pwrbutton.ko \
-        device/ti/am62x-kernel/kernel/$(TARGET_KERNEL_USE)/tps65219-regulator.ko
+        device/ti/am62x-kernel/kernel/$(TARGET_KERNEL_USE)/tps65219-regulator.ko \
+        device/ti/am62x-kernel/kernel/$(TARGET_KERNEL_USE)/pwm_bl.ko \
+        device/ti/am62x-kernel/kernel/$(TARGET_KERNEL_USE)/at803x.ko \
+        device/ti/am62x-kernel/kernel/$(TARGET_KERNEL_USE)/rtc-ds1307.ko \
+        device/ti/am62x-kernel/kernel/$(TARGET_KERNEL_USE)/pruss.ko \
+        device/ti/am62x-kernel/kernel/$(TARGET_KERNEL_USE)/usb-conn-gpio.ko
 
 BOARD_VENDOR_RAMDISK_KERNEL_MODULES_LOAD +=  $(BOARD_VENDOR_RAMDISK_KERNEL_MODULES)
 

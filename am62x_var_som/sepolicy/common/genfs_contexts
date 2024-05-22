@@ -12,21 +12,10 @@ genfscon sysfs /class/thermal		                                      u:object_r:
 genfscon sysfs /devices/virtual/thermal	                              u:object_r:sysfs_thermal:s0
 
 # Suspend
-genfscon sysfs /devices/platform/bus@f0000/bus@f0000:bus@b00000/2b1f0000.rtc/wakeup                                       u:object_r:sysfs_wakeup:s0
-genfscon sysfs /devices/platform/bus@f0000/bus@f0000:bus@b00000/2b1f0000.rtc/wakeup/wakeup0                               u:object_r:sysfs_wakeup:s0
-genfscon sysfs /devices/platform/bus@f0000/bus@f0000:bus@b00000/2b1f0000.rtc/rtc/rtc0/alarmtimer.0.auto/wakeup            u:object_r:sysfs_wakeup:s0
-genfscon sysfs /devices/platform/bus@f0000/bus@f0000:bus@b00000/2b1f0000.rtc/rtc/rtc0/alarmtimer.1.auto/wakeup            u:object_r:sysfs_wakeup:s0
-genfscon sysfs /devices/platform/bus@f0000/bus@f0000:bus@b00000/2b1f0000.rtc/rtc/rtc0/alarmtimer.3.auto/wakeup            u:object_r:sysfs_wakeup:s0
-genfscon sysfs /devices/platform/bus@f0000/2800000.serial/wakeup                                                          u:object_r:sysfs_wakeup:s0
-genfscon sysfs /devices/platform/bus@f0000/2800000.serial/wakeup/wakeup3                                                  u:object_r:sysfs_wakeup:s0
 genfscon sysfs /devices/platform/bus@f0000/f900000.dwc3-usb/wakeup                                                        u:object_r:sysfs_wakeup:s0
 genfscon sysfs /devices/platform/bus@f0000/f910000.dwc3-usb/wakeup                                                        u:object_r:sysfs_wakeup:s0
-genfscon sysfs /devices/platform/bus@f0000/f900000.dwc3-usb/wakeup/wakeup4                                                u:object_r:sysfs_wakeup:s0
-genfscon sysfs /devices/platform/bus@f0000/f910000.dwc3-usb/wakeup/wakeup5                                                u:object_r:sysfs_wakeup:s0
-genfscon sysfs /devices/platform/bus@f0000/20000000.i2c/i2c-0/0-003f/power_supply/tps6598x-source-psy-0-003f/wakeup5      u:object_r:sysfs_wakeup:s0
-genfscon sysfs /devices/platform/bus@f0000/fa20000.mmc/mmc_host/mmc2/mmc2:0001/mmc2:0001:2/wl18xx.3.auto/wakeup/          u:object_r:sysfs_wakeup:s0
-genfscon sysfs /devices/platform/bus@f0000/fa20000.mmc/mmc_host/mmc2/mmc2:0001/mmc2:0001:2/wl18xx.5.auto/wakeup           u:object_r:sysfs_wakeup:s0
-genfscon sysfs /devices/platform/bus@f0000/f910000.dwc3-usb/31100000.usb/xhci-hcd.0.auto/usb1/1-1/wakeup                  u:object_r:sysfs_wakeup:s0
+genfscon sysfs /devices/platform/bus@f0000/f900000.dwc3-usb/wakeup/wakeup0                                                u:object_r:sysfs_wakeup:s0
+genfscon sysfs /devices/platform/bus@f0000/f910000.dwc3-usb/wakeup/wakeup1                                                u:object_r:sysfs_wakeup:s0
 genfscon proc /pvr                                    u:object_r:vendor_proc_pvr:s0
 
 # Storage
@@ -38,6 +27,5 @@ genfscon sysfs /devices/platform/bus@f0000/fd00000.gpu           u:object_r:sysf
 # net
 genfscon sysfs /devices/platform/bus@f0000/8000000.ethernet/net/eth0                                                    u:object_r:sysfs_net:s0
 genfscon sysfs /devices/platform/bus@f0000/8000000.ethernet/net/eth1                                                    u:object_r:sysfs_net:s0
-genfscon sysfs /devices/platform/bus@f0000/fa20000.mmc/mmc_host/mmc2/mmc2:0001/mmc2:0001:2/wl18xx.3.auto/net/wlan0      u:object_r:sysfs_net:s0
 
 genfscon sysfs /devices/virtual/misc/usb_accessory u:object_r:sysfs_uhid:s0

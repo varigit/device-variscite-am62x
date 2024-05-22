@@ -1,10 +1,5 @@
 cameras:
-  # AM62x SK EVM camera on CSI0
-  "/base/bus@f0000/i2c@20020000/i2c-switch@71/i2c@1/camera@3c":
-    location: back
-    rotation: 0
-
-  # Beagle Play camera on CSI0
-  "/base/bus@f0000/bus@b00000/i2c@2b200000/camera@3c":
+  # camera on CSI0
+  "/base/bus@f0000/i2c@20000000/camera@3c":
     location: back
     rotation: 0
