@@ -102,7 +102,7 @@ AB_OTA_PARTITIONS := \
     vendor_dlkm
 
 ifeq ($(TARGET_AVB_ENABLE), true)
-AB_OTA_PARTITIONS += vbmeta
+AB_OTA_PARTITIONS += vbmeta vbmeta_vendor_dlkm
 endif
 
 # FS Configuration
