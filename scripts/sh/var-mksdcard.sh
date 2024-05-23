@@ -20,7 +20,7 @@ red_bold_echo()
 som="am62x"
 node="na"
 imagesdir="out/target/product/am62x_var_som"
-avb_feature=0
+avb_feature=1
 
 usage()
 {
@@ -30,8 +30,8 @@ usage()
 	echo " Usage: $(basename $0) <option> device_node"
 	echo
 	echo " options:"
-	echo " -h                           show help message"
-	echo " -v                           install images with AVB feature enabled"
+	echo " -h                show help message"
+	echo " -u                install unsigned dtbo generated buuilding android with AVB feature disabled"
 	echo
 }
 
@@ -42,7 +42,7 @@ node="na"
 while [ "$moreoptions" = 1 -a $# -gt 0 ]; do
 	case $1 in
 		-h) help; exit ;;
-		-v) avb_feature=1 ;;
+		-u) avb_feature=0 ;;
 		*) moreoptions=0; node=$1 ;;
 	esac
 	[ "$moreoptions" = 0 ] && [ $# -gt 1 ] && help && exit 1

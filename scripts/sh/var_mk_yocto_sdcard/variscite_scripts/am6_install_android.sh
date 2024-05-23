@@ -5,7 +5,7 @@ set -e
 . /usr/bin/echos.sh
 
 som=""
-avb_feature=0
+avb_feature=1
 
 if grep -q "AM62X" /sys/devices/soc0/family > /dev/null 2>&1; then
 	node=/dev/mmcblk0
@@ -25,20 +25,20 @@ usage()
 	echo " Usage: $(basename $0) <option>"
 	echo
 	echo " options:"
-	echo " -h                           show help message"
-	echo " -v                           install images with AVB feature enabled"
+	echo " -h                show help message"
+	echo " -u                install unsigned dtbo generated buuilding android with AVB feature disabled"
 	echo
 }
 
-while getopts "hv" OPTION;
+while getopts "hu" OPTION;
 do
 	case $OPTION in
 	h)
 		usage
 		exit 0
 		;;
-	v)
-		avb_feature=1
+	u)
+		avb_feature=0
 		;;
 	*)
 		usage
