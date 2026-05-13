@@ -8,8 +8,7 @@
 #      http://www.apache.org/licenses/LICENSE-2.0
 #
 
-PRODUCT_COPY_FILES += \
-	device/variscite/common/bootanimation/bootanimation-var1280.zip:system/media/bootanimation.zip
+-include device/variscite/common/bootanimation/variscite_bootanimation_logo.mk
 
 PRODUCT_COPY_FILES += \
 	frameworks/native/data/etc/android.hardware.bluetooth.xml:$(TARGET_COPY_OUT_VENDOR)/etc/permissions/android.hardware.bluetooth.xml \
