@@ -1,0 +1,10 @@
+# SOM-specific kernel prebuilts populated from external kernel builds.
+# These belong in their own git project (cf. device/ti/am62x-kernel),
+# not folded into the variscite device tree — keeps clones small and
+# decouples device-tree history from kernel-prebuilts churn.
+am62p-var-som-kernel/
+am62x-var-som-kernel/
+
+# Editor swap files
+.*.swp
+.*.swo
