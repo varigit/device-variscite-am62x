@@ -1,0 +1,8 @@
+# moal has no SDIO modalias so ueventd won't autoload it. insmod doesn't
+# follow modules.dep, so list the chain explicitly. moal params are insmod
+# args because init's insmod builtin doesn't forward kernel cmdline.
+on post-fs
+    insmod /vendor/lib/modules/cfg80211.ko
+    insmod /vendor/lib/modules/mlan.ko
+    insmod /vendor/lib/modules/moal.ko sta_name=wlan uap_name=wlan wfd_name=p2p fw_name=nxp/sd_w61x_v1.bin.se
+    setprop vendor.all.early_init.ready 1

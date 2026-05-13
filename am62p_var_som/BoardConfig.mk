@@ -43,3 +43,12 @@ PRODUCT_COPY_FILES := $(filter-out device/ti/am62x/flashall.sh:%,$(PRODUCT_COPY_
 PRODUCT_COPY_FILES += device/variscite/am62p_var_som/flashall.sh:$(TARGET_OUT)/flashall.sh
 
 BOARD_SEPOLICY_DIRS += device/variscite/am62p_var_som/sepolicy/common
+
+# moal depends on cfg80211 (vendor_dlkm, not available first-stage); mlan is
+# moal's dependency and init.early_init.rc re-inserts the whole chain second-
+# stage, so neither belongs in the first-stage ramdisk. Drop from both the
+# install set and the load list.
+BOARD_VENDOR_RAMDISK_KERNEL_MODULES := \
+	$(filter-out %/mlan.ko %/moal.ko,$(BOARD_VENDOR_RAMDISK_KERNEL_MODULES))
+BOARD_VENDOR_RAMDISK_KERNEL_MODULES_LOAD := \
+	$(filter-out %/mlan.ko %/moal.ko,$(BOARD_VENDOR_RAMDISK_KERNEL_MODULES_LOAD))
