@@ -1,0 +1,40 @@
+From 757a8f682ed40da2648c84afba9646e7eefdb652 Mon Sep 17 00:00:00 2001
+From: Marius Bagassien <marius.b@variscite.com>
+Date: Wed, 22 Apr 2026 21:54:17 +0200
+Subject: [PATCH 2/2] build: tasks: dtimages: make DTB_FILES overridable
+
+Change DTB_FILES from := to ?= so derivative device trees can substitute
+their own DTB list (and therefore their own dtb.img contents and DTB
+table indexes) via BoardConfig.mk, without having to fork this task file
+or touch the shared TI repo.
+
+No functional change for existing TI product.
+
+Signed-off-by: Marius Bagassien <marius.b@variscite.com>
+---
+ build/tasks/dtimages.mk | 9 +++++++--
+ 1 file changed, 7 insertions(+), 2 deletions(-)
+
+diff --git a/build/tasks/dtimages.mk b/build/tasks/dtimages.mk
+index fbdc9f7..728e56e 100644
+--- a/build/tasks/dtimages.mk
++++ b/build/tasks/dtimages.mk
+@@ -11,8 +11,13 @@ MKDTIMG := prebuilts/misc/linux-x86/libufdt/mkdtimg
+ DTBIMAGE := $(PRODUCT_OUT)/dtb.img
+ 
+ 
+-# Please keep this list fixed: add new files in the end of the list
+-DTB_FILES := \
++# Please keep this list fixed: add new files in the end of the list.
++#
++# Derivative device trees (e.g. SOM-on-carrier variants) can override this
++# list by setting DTB_FILES in their BoardConfig.mk, which is evaluated
++# before this task file. Use recursive (=) assignment there so $(LOCAL_DTB)
++# is resolved at rule-evaluation time rather than at BoardConfig time.
++DTB_FILES ?= \
+ 	$(LOCAL_DTB)/k3-am625-sk.dtb \
+ 	$(LOCAL_DTB)/k3-am62-lp-sk.dtb \
+ 	$(LOCAL_DTB)/k3-am625-beagleplay.dtb \
+-- 
+2.43.0
+

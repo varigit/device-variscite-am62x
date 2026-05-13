@@ -1,0 +1,99 @@
+From f30c915f8e7dcf0027be24fd0636ef887c27a020 Mon Sep 17 00:00:00 2001
+From: Marius Bagassien <marius.b@variscite.com>
+Date: Wed, 22 Apr 2026 20:00:00 +0200
+Subject: [PATCH 1/2] Make kernel/bootloader paths overridable
+
+Introduce LOCAL_KERNEL_DIR as an override point and make BOOTLOADERS_BINARIES
+conditional, so derivative device trees (e.g. Variscite VAR-SOM-AM62P) can
+retarget the kernel prebuilts and bootloader binary directories before
+including these common files.
+
+Signed-off-by: Marius Bagassien <marius.b@variscite.com>
+---
+ BoardConfig-common.mk | 21 +++++++++++++--------
+ device-common.mk      |  7 +++++--
+ 2 files changed, 18 insertions(+), 10 deletions(-)
+
+diff --git a/BoardConfig-common.mk b/BoardConfig-common.mk
+index bd71f63..847249c 100644
+--- a/BoardConfig-common.mk
++++ b/BoardConfig-common.mk
+@@ -26,8 +26,13 @@ endif
+ endif
+ 
+ -include device/ti/am62x/shared/bootloader/BoardConfig.mk
+-TARGET_BOOTLOADER_VERSION ?= 2025.01 
+-BOOTLOADERS_BINARIES := vendor/ti/am62x/bootloader/$(TARGET_BOOTLOADER_VERSION)/
++TARGET_BOOTLOADER_VERSION ?= 2025.01
++BOOTLOADERS_BINARIES ?= vendor/ti/am62x/bootloader/$(TARGET_BOOTLOADER_VERSION)/
++
++# Allow derivative boards to retarget the kernel prebuilts tree (DTBO, ramdisk
++# modules, DLKM modules) before this file is included. Falls back to the TI
++# default so existing TI products keep working unchanged.
++LOCAL_KERNEL_DIR ?= device/ti/am62x-kernel
+ 
+ # Primary Arch
+ TARGET_ARCH := arm64
+@@ -74,7 +79,7 @@ AB_OTA_PARTITIONS := \
+ 
+ # FS Configuration
+ BOARD_BOOTIMAGE_PARTITION_SIZE := 41943040 # 40MiB
+-BOARD_PREBUILT_DTBOIMAGE := device/ti/am62x-kernel/kernel/$(TARGET_KERNEL_USE)/dtbo/dtbo.img
++BOARD_PREBUILT_DTBOIMAGE := $(LOCAL_KERNEL_DIR)/kernel/$(TARGET_KERNEL_USE)/dtbo/dtbo.img
+ BOARD_DTBOIMG_PARTITION_SIZE := 8388608 # 8 MiB
+ BOARD_SYSTEMIMAGE_FILE_SYSTEM_TYPE ?= ext4
+ BOARD_VENDORIMAGE_FILE_SYSTEM_TYPE := ext4
+@@ -176,7 +181,7 @@ $(foreach board,$(BOARD_LIST), \
+ PRODUCT_COPY_FILES += \
+ 	vendor/ti/am62x/binaries/persist.img:$(TARGET_OUT)/persist.img \
+ 	vendor/ti/am62x/binaries/metadata.img:$(TARGET_OUT)/metadata.img \
+-	device/ti/am62x-kernel/kernel/$(TARGET_KERNEL_USE)/dtbo/dtbo.img:$(TARGET_OUT)/dtbo-unsigned.img
++	$(LOCAL_KERNEL_DIR)/kernel/$(TARGET_KERNEL_USE)/dtbo/dtbo.img:$(TARGET_OUT)/dtbo-unsigned.img
+ 
+ # Copy Android Flashing Script
+ PRODUCT_COPY_FILES += \
+@@ -220,10 +225,10 @@ BOARD_AVB_SYSTEM_DLKM_ADD_HASHTREE_FOOTER_ARGS += --hash_algorithm sha256
+ 
+ # Dynamically generate BOARD_VENDOR_RAMDISK_KERNEL_MODULES from ramdisk directory
+ # Exclude pvrsrvkm modules as they will be added conditionally based on platform
+-BOARD_VENDOR_RAMDISK_KERNEL_MODULES := $(shell find device/ti/am62x-kernel/kernel/$(TARGET_KERNEL_USE)/ramdisk -name '*.ko' ! -name 'pvrsrvkm*.ko' 2>/dev/null | sort)
++BOARD_VENDOR_RAMDISK_KERNEL_MODULES := $(shell find $(LOCAL_KERNEL_DIR)/kernel/$(TARGET_KERNEL_USE)/ramdisk -name '*.ko' ! -name 'pvrsrvkm*.ko' 2>/dev/null | sort)
+ 
+ # Add platform-specific PowerVR kernel modules
+-RAMDISK_MODULE_PATH := device/ti/am62x-kernel/kernel/$(TARGET_KERNEL_USE)/ramdisk
++RAMDISK_MODULE_PATH := $(LOCAL_KERNEL_DIR)/kernel/$(TARGET_KERNEL_USE)/ramdisk
+ 
+ ifeq ($(PRODUCT_PLATFORM),am62x)
+ BOARD_VENDOR_RAMDISK_KERNEL_MODULES += $(RAMDISK_MODULE_PATH)/pvrsrvkm.ko
+@@ -238,8 +243,8 @@ BOARD_VENDOR_RAMDISK_KERNEL_MODULES_LOAD +=  $(BOARD_VENDOR_RAMDISK_KERNEL_MODUL
+ # =============================================================================
+ 
+ # Path to the organized modules directories
+-VENDOR_DLKM_MODULES_DIR := device/ti/am62x-kernel/kernel/$(TARGET_KERNEL_USE)/vendor_dlkm
+-SYSTEM_DLKM_MODULES_DIR := device/ti/am62x-kernel/kernel/$(TARGET_KERNEL_USE)/system_dlkm
++VENDOR_DLKM_MODULES_DIR := $(LOCAL_KERNEL_DIR)/kernel/$(TARGET_KERNEL_USE)/vendor_dlkm
++SYSTEM_DLKM_MODULES_DIR := $(LOCAL_KERNEL_DIR)/kernel/$(TARGET_KERNEL_USE)/system_dlkm
+ 
+ # Generate the module lists from organized directories
+ BOARD_VENDOR_DLKM_MODULES := $(shell find $(VENDOR_DLKM_MODULES_DIR) -name '*.ko' 2>/dev/null | sort)
+diff --git a/device-common.mk b/device-common.mk
+index 7d4a9f7..a6777a8 100644
+--- a/device-common.mk
++++ b/device-common.mk
+@@ -25,8 +25,11 @@ PRODUCT_ART_TARGET_INCLUDE_DEBUG_BUILD := false
+ PRODUCT_MINIMIZE_JAVA_DEBUG_INFO := true
+ 
+ # Kernel part
+-LOCAL_KERNEL := device/ti/am62x-kernel/kernel/$(TARGET_KERNEL_USE)/ti-Image.lz4
+-LOCAL_DTB := device/ti/am62x-kernel/kernel/$(TARGET_KERNEL_USE)
++# Derivatives (e.g. SOM vendors) can pre-set LOCAL_KERNEL_DIR / LOCAL_KERNEL
++# before this file is inherited to point at their own kernel prebuilts tree.
++LOCAL_KERNEL_DIR ?= device/ti/am62x-kernel
++LOCAL_KERNEL ?= $(LOCAL_KERNEL_DIR)/kernel/$(TARGET_KERNEL_USE)/ti-Image.lz4
++LOCAL_DTB ?= $(LOCAL_KERNEL_DIR)/kernel/$(TARGET_KERNEL_USE)
+ 
+ PRODUCT_COPY_FILES += \
+ 	$(LOCAL_KERNEL):kernel
+-- 
+2.43.0
+

@@ -1,0 +1,53 @@
+From 77c7b92c01a30a8e75f499d0a769c471fbc2bec4 Mon Sep 17 00:00:00 2001
+From: Marius Bagassien <marius.b@variscite.com>
+Date: Thu, 30 Apr 2026 01:22:20 +0200
+Subject: [PATCH] audio: alsa: Mixer: add wm8904 fallback control names
+Signed-off-by: Marius Bagassien <marius.b@variscite.com>
+---
+ audio/alsa/Mixer.cpp | 28 ++++++++++++++++++++--------
+ 1 file changed, 20 insertions(+), 8 deletions(-)
+
+diff --git a/audio/alsa/Mixer.cpp b/audio/alsa/Mixer.cpp
+index 89589f7..e85ade2 100644
+--- a/audio/alsa/Mixer.cpp
++++ b/audio/alsa/Mixer.cpp
+@@ -42,16 +42,28 @@ inline std::string errorToString(const ScopedAStatus& s) {
+ namespace aidl::android::hardware::audio::core::alsa {
+ 
+ // static
++// Per-Control list is tried in order; first match wins. TI EVM
++// (AIC family) names first, wm8904 (Variscite Symphony) names second.
++// wm8904's stereo "Capture Switch" handles all four MIC_SWITCH_*
++// (setMicMute writes identical values, idempotent).
+ const std::map<Mixer::Control, std::vector<Mixer::ControlNamesAndExpectedCtlType>>
+         Mixer::kPossibleControls = {
+-                {Mixer::MASTER_SWITCH, {{"HP Playback Switch", MIXER_CTL_TYPE_BOOL}}},
+-                {Mixer::MASTER_VOLUME, {{"PCM Playback Volume", MIXER_CTL_TYPE_INT}}},
+-                {Mixer::HW_VOLUME, {{"HP DAC Playback Volume", MIXER_CTL_TYPE_INT}}},
+-                {Mixer::MIC_SWITCH_LEFT_3L, {{"Left PGA Mixer Mic3L Switch", MIXER_CTL_TYPE_BOOL}}},
+-                {Mixer::MIC_SWITCH_RIGHT_3L, {{"Right PGA Mixer Mic3L Switch", MIXER_CTL_TYPE_BOOL}}},
+-                {Mixer::MIC_SWITCH_LEFT_3R, {{"Left PGA Mixer Mic3R Switch", MIXER_CTL_TYPE_BOOL}}},
+-                {Mixer::MIC_SWITCH_RIGHT_3R, {{"Right PGA Mixer Mic3R Switch", MIXER_CTL_TYPE_BOOL}}},
+-                {Mixer::MIC_GAIN, {{"PGA Capture Volume", MIXER_CTL_TYPE_INT}}}};
++                {Mixer::MASTER_SWITCH, {{"HP Playback Switch", MIXER_CTL_TYPE_BOOL},
++                                        {"Headphone Switch", MIXER_CTL_TYPE_BOOL}}},
++                {Mixer::MASTER_VOLUME, {{"PCM Playback Volume", MIXER_CTL_TYPE_INT},
++                                        {"Digital Playback Volume", MIXER_CTL_TYPE_INT}}},
++                {Mixer::HW_VOLUME, {{"HP DAC Playback Volume", MIXER_CTL_TYPE_INT},
++                                    {"Headphone Volume", MIXER_CTL_TYPE_INT}}},
++                {Mixer::MIC_SWITCH_LEFT_3L, {{"Left PGA Mixer Mic3L Switch", MIXER_CTL_TYPE_BOOL},
++                                             {"Capture Switch", MIXER_CTL_TYPE_BOOL}}},
++                {Mixer::MIC_SWITCH_RIGHT_3L, {{"Right PGA Mixer Mic3L Switch", MIXER_CTL_TYPE_BOOL},
++                                              {"Capture Switch", MIXER_CTL_TYPE_BOOL}}},
++                {Mixer::MIC_SWITCH_LEFT_3R, {{"Left PGA Mixer Mic3R Switch", MIXER_CTL_TYPE_BOOL},
++                                             {"Capture Switch", MIXER_CTL_TYPE_BOOL}}},
++                {Mixer::MIC_SWITCH_RIGHT_3R, {{"Right PGA Mixer Mic3R Switch", MIXER_CTL_TYPE_BOOL},
++                                              {"Capture Switch", MIXER_CTL_TYPE_BOOL}}},
++                {Mixer::MIC_GAIN, {{"PGA Capture Volume", MIXER_CTL_TYPE_INT},
++                                   {"Capture Volume", MIXER_CTL_TYPE_INT}}}};
+ 
+ // static
+ Mixer::Controls Mixer::initializeMixerControls(struct mixer* mixer) {
+-- 
+2.43.0
+
