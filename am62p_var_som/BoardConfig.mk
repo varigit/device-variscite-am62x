@@ -17,6 +17,9 @@ TARGET_BOOTLOADER_BOARD_NAME := am62p_var_som
 BOARD_USERDATAIMAGE_PARTITION_SIZE := 26744695808
 
 BOARD_KERNEL_CMDLINE += cma=768M
+BOARD_KERNEL_CMDLINE += earlycon=ns16550a,mmio32,0x02800000
+BOARD_KERNEL_CMDLINE += console=ttyS0,115200n8
+
 BOARD_BOOTCONFIG     += androidboot.hardware=am62p
 
 BOARD_LIST := am62p-var-som-symphony
@@ -31,6 +34,10 @@ DTB_FILES = \
 	$(LOCAL_DTB)/k3-am62p5-var-som-symphony-dual-independent-display.dtb
 
 include device/ti/am62x/BoardConfig-common.mk
+
+# ttyS2 is the BT serdev on Symphony; printk on it corrupts the btnxpuart
+# firmware-download handshake.
+BOARD_KERNEL_CMDLINE := $(filter-out console=ttyS2%,$(BOARD_KERNEL_CMDLINE))
 
 PRODUCT_COPY_FILES := $(filter-out device/ti/am62x/flashall.sh:%,$(PRODUCT_COPY_FILES))
 PRODUCT_COPY_FILES += device/variscite/am62p_var_som/flashall.sh:$(TARGET_OUT)/flashall.sh
