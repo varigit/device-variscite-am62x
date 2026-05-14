@@ -2,6 +2,8 @@
 # Meant to be called by install_android.sh
 set -e
 
+script_dir=$(cd "$(dirname "$0")" && pwd)
+
 . /usr/bin/echos.sh
 
 som=""
@@ -29,6 +31,10 @@ else
 fi
 
 imagesdir="/opt/images/Android"
+bundled_android_dir="${script_dir}/../android"
+if [ -d "${bundled_android_dir}" ]; then
+	imagesdir="${bundled_android_dir}"
+fi
 
 usage()
 {
