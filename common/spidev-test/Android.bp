@@ -1,0 +1,22 @@
+package {
+    default_applicable_licenses: ["spidev_test_license"],
+}
+
+license {
+    name: "spidev_test_license",
+    visibility: [":__subpackages__"],
+    license_kinds: [
+        "SPDX-license-identifier-GPL-2.0-only",
+    ],
+    license_text: [
+        "spidev_test.c",
+    ],
+}
+
+cc_binary {
+    name: "spidev_test",
+    srcs: ["spidev_test.c"],
+    cflags: [
+        "-Wno-unused-parameter",
+    ],
+}

@@ -28,6 +28,9 @@ PRODUCT_COPY_FILES += \
 PRODUCT_PACKAGES += \
 	android.hardware.bluetooth-service.default
 
+PRODUCT_PACKAGES_DEBUG += \
+	spidev_test
+
 # IW612 has no LEA offload but expose the switcher.
 PRODUCT_PRODUCT_PROPERTIES += \
 	ro.bluetooth.leaudio_offload.supported=false \
