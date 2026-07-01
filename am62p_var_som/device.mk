@@ -48,3 +48,7 @@ PRODUCT_COPY_FILES += \
 
 PRODUCT_COPY_FILES += \
 	device/variscite/am62p_var_som/camera/camera_hal.yaml:$(TARGET_COPY_OUT_VENDOR)/etc/libcamera/camera_hal.yaml
+
+PRODUCT_COPY_FILES += \
+	device/variscite/common/idc/generic_ft5x06.idc:$(TARGET_COPY_OUT_VENDOR)/usr/idc/generic_ft5x06.idc \
+	device/variscite/common/idc/generic_ft5x06.idc:$(TARGET_COPY_OUT_VENDOR)/usr/idc/1-0038_generic_ft5x06.idc
