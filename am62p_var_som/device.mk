@@ -46,6 +46,9 @@ PRODUCT_COPY_FILES += \
 PRODUCT_COPY_FILES += \
 	device/variscite/am62p_var_som/audio/audio_policy_configuration.xml:$(TARGET_COPY_OUT_VENDOR)/etc/audio_policy_configuration.xml
 
+PRODUCT_VENDOR_PROPERTIES += \
+	vendor.ti.audio.cardprefix=wm8904
+
 PRODUCT_COPY_FILES += \
 	device/variscite/am62p_var_som/camera/camera_hal.yaml:$(TARGET_COPY_OUT_VENDOR)/etc/libcamera/camera_hal.yaml
 
