@@ -17,11 +17,21 @@ red_bold_echo()
 	echo -e "\e[31m\e[1m$@\e[0m"
 }
 
-som="am62p"
-board="am62p-var-som-symphony"
+som="${SOM:-am62p}"
 node="na"
-imagesdir="out/target/product/am62p_var_som"
 avb_feature=1
+case "${som}" in
+	am62p)
+		board="am62p-var-som-symphony"
+		imagesdir="out/target/product/am62p_var_som"
+		;;
+	am62)
+		board="am62-var-som-symphony"
+		imagesdir="out/target/product/am62x_var_som"
+		;;
+	*)
+		echo "Unsupported SOM: ${som}"; exit 1 ;;
+esac
 
 usage()
 {
@@ -33,6 +43,9 @@ usage()
 	echo " options:"
 	echo " -h                show help message"
 	echo " -u                install unsigned dtbo generated buuilding android with AVB feature disabled"
+	echo
+	echo " environment:"
+	echo " SOM=am62p|am62    select the SOM (default: am62p)"
 	echo
 }
 

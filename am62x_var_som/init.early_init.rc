@@ -1,0 +1,7 @@
+# brcmfmac's fwvid sub-modules (wcc/cyw) have no modalias and in-kernel
+# request_module() is disabled on Android: load the blocklisted chain
+# here, in modules.dep order.
+# hci_uart lives in system_dlkm, outside ueventd's modalias scan dirs.
+on post-fs
+    exec u:r:vendor_modprobe:s0 -- /vendor/bin/modprobe -a -d /vendor/lib/modules brcmfmac-wcc brcmfmac-cyw
+    exec u:r:vendor_modprobe:s0 -- /vendor/bin/modprobe -a -d /system_dlkm/lib/modules hci_uart

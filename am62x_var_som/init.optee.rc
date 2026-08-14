@@ -1,0 +1,14 @@
+# Override for device/ti/am62x/optee/init.optee.rc: hoist tee-supplicant
+# to `on fs` so it's up before vendor.keymint-optee's first TA invocation.
+# Without this, keymint blocks on OP-TEE RPC, keystore2 stalls vold, and
+# late-fs mount_all of /data times out.
+on fs
+    restorecon_recursive /mnt/vendor/persist/
+    start vendor.tee_supplicant
+    wait_for_prop init.svc.vendor.tee_supplicant running
+
+service vendor.tee_supplicant /vendor/bin/tee-supplicant /dev/teepriv0
+    class early_hal
+    user root
+    group system shell
+    capabilities SYS_ADMIN

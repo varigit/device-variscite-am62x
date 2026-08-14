@@ -1,0 +1,2 @@
+# Label pwm-backlight sysfs as sysfs_leds so hal_light_default can enumerate it.
+genfscon sysfs /class/backlight                  u:object_r:sysfs_leds:s0

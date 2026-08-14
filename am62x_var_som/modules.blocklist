@@ -1,0 +1,3 @@
+# Keep ueventd from autoloading brcmfmac before its fwvid sub-modules
+# can register; init.early_init.rc loads the chain explicitly.
+blocklist brcmfmac

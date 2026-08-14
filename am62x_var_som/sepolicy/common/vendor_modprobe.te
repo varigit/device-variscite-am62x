@@ -1,0 +1,5 @@
+# init.early_init.rc modprobe: modules.dep crosses into system_dlkm
+# (cfg80211 -> rfkill) and hci_uart is loaded from system_dlkm.
+allow vendor_modprobe system_dlkm_file:dir r_dir_perms;
+allow vendor_modprobe system_dlkm_file:file r_file_perms;
+allow vendor_modprobe system_dlkm_file:system module_load;
