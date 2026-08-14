@@ -1,0 +1,77 @@
+From b267c91c9c6bf8ff271d5f8d210f314fce5a207e Mon Sep 17 00:00:00 2001
+From: Marius Bagassien <marius.b@variscite.com>
+Date: Thu, 6 Aug 2026 11:52:34 +0200
+Subject: [PATCH 3/3] BoardConfig-common: use the kernel's modules.load lists
+
+Define module membership and load order from the per-partition
+modules.load lists shipped with the kernel prebuilts, instead of
+find(1)-ing the directories, which force-loaded any stray .ko present.
+
+Signed-off-by: Marius Bagassien <marius.b@variscite.com>
+---
+ BoardConfig-common.mk | 41 ++++++++++++++++-------------------------
+ 1 file changed, 16 insertions(+), 25 deletions(-)
+
+diff --git a/BoardConfig-common.mk b/BoardConfig-common.mk
+index 847249c..f69d827 100644
+--- a/BoardConfig-common.mk
++++ b/BoardConfig-common.mk
+@@ -223,39 +223,30 @@ BOARD_AVB_VENDOR_ADD_HASHTREE_FOOTER_ARGS += --hash_algorithm sha256
+ BOARD_AVB_VENDOR_DLKM_ADD_HASHTREE_FOOTER_ARGS += --hash_algorithm sha256
+ BOARD_AVB_SYSTEM_DLKM_ADD_HASHTREE_FOOTER_ARGS += --hash_algorithm sha256
+ 
+-# Dynamically generate BOARD_VENDOR_RAMDISK_KERNEL_MODULES from ramdisk directory
+-# Exclude pvrsrvkm modules as they will be added conditionally based on platform
+-BOARD_VENDOR_RAMDISK_KERNEL_MODULES := $(shell find $(LOCAL_KERNEL_DIR)/kernel/$(TARGET_KERNEL_USE)/ramdisk -name '*.ko' ! -name 'pvrsrvkm*.ko' 2>/dev/null | sort)
++# Module membership and load order come from the kernel dist's ordered
++# per-partition modules.load lists; stray .ko files in the prebuilts
++# are ignored.
++KERNEL_PREBUILT_DIR := $(LOCAL_KERNEL_DIR)/kernel/$(TARGET_KERNEL_USE)
+ 
+-# Add platform-specific PowerVR kernel modules
+-RAMDISK_MODULE_PATH := $(LOCAL_KERNEL_DIR)/kernel/$(TARGET_KERNEL_USE)/ramdisk
++# First stage init / vendor ramdisk.
++BOARD_VENDOR_RAMDISK_KERNEL_MODULES_LOAD := $(strip $(shell cat $(KERNEL_PREBUILT_DIR)/initramfs/vendor_boot.modules.load 2>/dev/null))
+ 
++# The list carries both PowerVR variants; keep only this platform's GPU.
+ ifeq ($(PRODUCT_PLATFORM),am62x)
+-BOARD_VENDOR_RAMDISK_KERNEL_MODULES += $(RAMDISK_MODULE_PATH)/pvrsrvkm.ko
++BOARD_VENDOR_RAMDISK_KERNEL_MODULES_LOAD := $(filter-out %/pvrsrvkm_am62p.ko,$(BOARD_VENDOR_RAMDISK_KERNEL_MODULES_LOAD))
+ else ifneq ($(filter am62p am67a,$(PRODUCT_PLATFORM)),)
+-BOARD_VENDOR_RAMDISK_KERNEL_MODULES += $(RAMDISK_MODULE_PATH)/pvrsrvkm_am62p.ko
++BOARD_VENDOR_RAMDISK_KERNEL_MODULES_LOAD := $(filter-out %/pvrsrvkm.ko,$(BOARD_VENDOR_RAMDISK_KERNEL_MODULES_LOAD))
+ endif
+ 
+-BOARD_VENDOR_RAMDISK_KERNEL_MODULES_LOAD +=  $(BOARD_VENDOR_RAMDISK_KERNEL_MODULES)
++BOARD_VENDOR_RAMDISK_KERNEL_MODULES := $(addprefix $(KERNEL_PREBUILT_DIR)/ramdisk/,$(notdir $(BOARD_VENDOR_RAMDISK_KERNEL_MODULES_LOAD)))
+ 
+-# =============================================================================
+-# DLKM module configuration using organized directory structure
+-# =============================================================================
++# Second stage: vendor_dlkm modules to /vendor/lib/modules.
++BOARD_VENDOR_KERNEL_MODULES_LOAD := $(strip $(shell cat $(KERNEL_PREBUILT_DIR)/vendor_dlkm/vendor_dlkm.modules.load 2>/dev/null))
++BOARD_VENDOR_KERNEL_MODULES += $(addprefix $(KERNEL_PREBUILT_DIR)/vendor_dlkm/,$(notdir $(BOARD_VENDOR_KERNEL_MODULES_LOAD)))
+ 
+-# Path to the organized modules directories
+-VENDOR_DLKM_MODULES_DIR := $(LOCAL_KERNEL_DIR)/kernel/$(TARGET_KERNEL_USE)/vendor_dlkm
+-SYSTEM_DLKM_MODULES_DIR := $(LOCAL_KERNEL_DIR)/kernel/$(TARGET_KERNEL_USE)/system_dlkm
+-
+-# Generate the module lists from organized directories
+-BOARD_VENDOR_DLKM_MODULES := $(shell find $(VENDOR_DLKM_MODULES_DIR) -name '*.ko' 2>/dev/null | sort)
+-BOARD_SYSTEM_DLKM_MODULES := $(shell find $(SYSTEM_DLKM_MODULES_DIR) -name '*.ko' 2>/dev/null | sort)
+-
+-# Copy vendor_dlkm modules to /vendor/lib/modules
+-BOARD_VENDOR_KERNEL_MODULES += $(BOARD_VENDOR_DLKM_MODULES)
+-
+-# Copy system_dlkm modules to /system_dlkm/lib/modules
+-BOARD_SYSTEM_KERNEL_MODULES += $(BOARD_SYSTEM_DLKM_MODULES)
+-BOARD_SYSTEM_KERNEL_MODULES_LOAD += $(BOARD_SYSTEM_KERNEL_MODULES)
++# GKI modules to /system_dlkm/lib/modules.
++BOARD_SYSTEM_KERNEL_MODULES_LOAD := $(strip $(shell cat $(KERNEL_PREBUILT_DIR)/system_dlkm/system_dlkm.modules.load 2>/dev/null))
++BOARD_SYSTEM_KERNEL_MODULES += $(addprefix $(KERNEL_PREBUILT_DIR)/system_dlkm/,$(notdir $(BOARD_SYSTEM_KERNEL_MODULES_LOAD)))
+ 
+ -include device/ti/am62x/optee/BoardConfig.mk
+ -include device/ti/am62x/shared/graphics/BoardConfig.mk
+-- 
+2.43.0
+
