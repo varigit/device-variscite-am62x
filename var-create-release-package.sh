@@ -3,7 +3,7 @@
 # Copyright 2026 Variscite Ltd. - https://www.variscite.com/
 # SPDX-License-Identifier: Apache-2.0
 #
-# Build Android artifacts for a Variscite AM62P_VAR_SOM target and stage a
+# Build Android artifacts for a Variscite target and stage a
 # release tarball.
 #
 # Adapted from the imx8 version of this script for the TI AOSP tree.
@@ -12,7 +12,7 @@ set -e
 
 usage() {
   cat <<'EOF'
-var-create-release-package.sh - Build and stage AM62P_VAR_SOM Android artifacts
+var-create-release-package.sh - Build and stage Variscite Android artifacts
 
 USAGE:
   MACHINE=<machine> ./var-create-release-package.sh [--release R] [--variant userdebug|user] [--jobs N]
@@ -20,6 +20,7 @@ USAGE:
 
 REQUIRED:
   MACHINE must be one of:
+    am62-var-som-symphony
     am62p-var-som-symphony
 
 OPTIONS:
@@ -61,6 +62,7 @@ esac
 PRODUCT=""
 LUNCH_PRODUCT=""
 case "${MACHINE}" in
+  am62-var-som-symphony)  PRODUCT="am62x_var_som"; LUNCH_PRODUCT="am62x_var_som" ;;
   am62p-var-som-symphony) PRODUCT="am62p_var_som"; LUNCH_PRODUCT="am62p_var_som" ;;
   *) echo "ERROR: unsupported MACHINE: ${MACHINE}"; usage; exit 1 ;;
 esac
@@ -130,7 +132,7 @@ run_build() {
   )
 }
 
-# FAT32 image bundling tispl.bin + u-boot.img — what AM62P U-Boot expects in
+# FAT32 image bundling tispl.bin + u-boot.img — what TI ROM code expects in
 # the "bootloader" partition. Same recipe as flashall.sh's
 # generate_bootloader_image, factored out so the released artifact is the
 # ready-to-flash bootloader-${MACHINE}.img instead of the raw pieces.
