@@ -24,7 +24,10 @@ if [[ "${soc_family}" == *AM62PX* ]] || [[ "${soc_family}" == *AM62P* ]]; then
 elif [[ "${soc_family}" == *AM62X* ]] || [[ "${soc_family}" == *AM62* ]]; then
 	node=/dev/mmcblk0
 	som="am62x"
-	board="am62x-sk"
+	case "${dt_model}" in
+		*VAR-SOM-AM62*Symphony*) board="am62-var-som-symphony" ;;
+		*) red_bold_echo "ERROR: Unsupported AM62 carrier: '${dt_model}'"; exit 1 ;;
+	esac
 else
 	red_bold_echo "ERROR: Unsupported SoC family: '${soc_family}'"
 	exit 1
