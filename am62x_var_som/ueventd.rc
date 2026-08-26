@@ -1,0 +1,26 @@
+modalias_handling enabled
+
+/dev/dma_heap/reserved      0666   system     graphics
+
+# for android sync framework
+/dev/pvr_sync             0666   system     graphics
+# gpu
+/dev/dri/card0 0660 system graphics
+/dev/dri/card1 0660 system graphics
+/dev/dri/card2 0660 system graphics
+/dev/dri/renderD128 0666 system graphics
+
+# optee
+/dev/tee0      0660  system  system
+/dev/teepriv0  0660  system  system
+
+# camera
+/dev/video*               0660   system     camera
+/dev/media*               0660   system     camera
+/dev/v4l-subdev*          0660   system     camera
+
+# Storage: for factory reset protection feature
+/dev/block/by-name/frp   0660   system     system
+
+# pwm-backlight: the lights HAL runs as user system
+/sys/class/backlight/backlight brightness 0664 system system

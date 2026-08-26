@@ -13,6 +13,11 @@
 PRODUCT_COPY_FILES += \
 	device/variscite/am62x_var_som/init.early_init.rc:$(TARGET_COPY_OUT_VENDOR)/etc/init/init.early_init.rc
 
+# Fork of TI's ueventd.am62x.rc; adds backlight brightness perms for the
+# lights HAL. Listed before TI's copy in the inherit chain, so it wins.
+PRODUCT_COPY_FILES += \
+	device/variscite/am62x_var_som/ueventd.rc:$(TARGET_COPY_OUT_VENDOR)/etc/ueventd.rc
+
 # Sterling LWB / LWB5 (BCM43430 / BCM4339) WiFi + BT combo firmware.
 BCM_FIRMWARE_PATH := vendor/variscite/bcm_4343w_fw/brcm
 PRODUCT_COPY_FILES += \
