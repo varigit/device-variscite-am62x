@@ -20,6 +20,11 @@ PRODUCT_COPY_FILES += \
 PRODUCT_COPY_FILES += \
 	device/variscite/am62p_var_som/init.early_init.rc:$(TARGET_COPY_OUT_VENDOR)/etc/init/init.early_init.rc
 
+# Fork of TI's ueventd.am62p.rc; adds backlight brightness perms for the
+# lights HAL. Listed before TI's copy in the inherit chain, so it wins.
+PRODUCT_COPY_FILES += \
+	device/variscite/am62p_var_som/ueventd.rc:$(TARGET_COPY_OUT_VENDOR)/etc/ueventd.rc
+
 # Overrides TI's empty AAOS stub; PackageManager won't report FEATURE_BLUETOOTH otherwise.
 PRODUCT_COPY_FILES += \
 	frameworks/native/data/etc/android.hardware.bluetooth.xml:$(TARGET_COPY_OUT_VENDOR)/etc/permissions/android.hardware.bluetooth.xml \

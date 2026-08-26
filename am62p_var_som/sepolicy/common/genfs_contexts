@@ -1,2 +1,5 @@
 # Label pwm-backlight sysfs as sysfs_leds so hal_light_default can enumerate it.
+# /class/backlight covers only the symlink dir; the real nodes live under
+# /devices/platform/backlight and must be labeled too.
 genfscon sysfs /class/backlight                  u:object_r:sysfs_leds:s0
+genfscon sysfs /devices/platform/backlight       u:object_r:sysfs_leds:s0
